@@ -1,9 +1,7 @@
-'use client'
-
-export default function Page() {
+export default function AdminPage() {
   return (
     <div>
-      <h2>admin page</h2>
+      admin content
     </div>
   )
 }

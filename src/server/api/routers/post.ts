@@ -12,14 +12,22 @@ export const postRouter = createTRPCRouter({
     }),
 
   create: publicProcedure
-    .input(z.object({ name: z.string().min(1) }))
+    .input(z.object({
+      title: z.string().min(1),
+      content: z.string().min(1),
+    }))
     .mutation(async ({ ctx, input }) => {
-      // simulate a slow db call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const superAdmin = await ctx.db.user.findFirst({
+        where: {
+          role: 'SUPER_ADMIN'
+        },
+      })
 
       return ctx.db.post.create({
         data: {
-          name: input.name,
+          title: input.title,
+          content: input.content,
+          userId: superAdmin.id,
         },
       });
     }),
