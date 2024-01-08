@@ -17,6 +17,8 @@ export const env = createEnv({
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
+    QUERY_INPUT_PAGE_SIZE: z.number().default(10),
+    QUERY_INPUT_ORDER_TYPE: z.enum(['ASC', 'DESC']).default('DESC'),
   },
 
   /**
@@ -35,6 +37,8 @@ export const env = createEnv({
   runtimeEnv: {
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
+    QUERY_INPUT_PAGE_SIZE: process.env.QUERY_INPUT_PAGE_SIZE,
+    QUERY_INPUT_ORDER_TYPE: process.env.QUERY_INPUT_ORDER_TYPE,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
   /**

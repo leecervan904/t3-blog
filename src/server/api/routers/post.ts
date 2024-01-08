@@ -1,16 +1,10 @@
-import { z } from "zod";
+import { z } from 'zod'
+import { type Prisma } from '@prisma/client'
 
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import { createTRPCRouter, publicProcedure } from '~/server/api/trpc'
+import { BasePageInfo, BaseFilterInfo, BaseOrderInfo } from '~/server/api/inputs'
 
 export const postRouter = createTRPCRouter({
-  hello: publicProcedure
-    .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
-      return {
-        greeting: `Hello ${input.text}`,
-      };
-    }),
-
   create: publicProcedure
     .input(z.object({
       title: z.string().min(1),
@@ -27,9 +21,75 @@ export const postRouter = createTRPCRouter({
         data: {
           title: input.title,
           content: input.content,
-          userId: superAdmin.id,
+          userId: superAdmin!.id,
         },
       });
+    }),
+
+  delete: publicProcedure
+    .input(z.object({
+      id: z.number(),
+    })).mutation(async ({ ctx, input }) => {
+      const { id } = input
+
+      return ctx.db.post.delete({
+        where: { id }
+      })
+    }),
+
+  update: publicProcedure
+    .input(z.object({
+      id: z.number(),
+      post: z.object({
+        title: z.optional(z.string().min(1)),
+      })
+    }))
+    .mutation(async ({ ctx, input }) => {
+      const { id, post } = input
+
+      return ctx.db.post.update({
+        where: { id },
+        data: post,
+      })
+    }),
+
+  find: publicProcedure
+    .input(z.object({
+      id: z.number(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      const { id } = input
+
+      return ctx.db.post.findUnique({
+        where: { id }
+      })
+    }),
+
+  pages: publicProcedure
+    .input(
+      BasePageInfo
+        .merge(BaseFilterInfo)
+        .merge(BaseOrderInfo)
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { page, pageSize, keywords } = input
+
+      const where: Prisma.PostWhereInput = {}
+
+      if (keywords) {
+        where.title = {
+          contains: keywords,
+        }
+      }
+
+      return ctx.db.post.findMany({
+        where,
+        take: pageSize,
+        skip: (page - 1) * pageSize,
+        orderBy: {
+          createdAt: 'desc',
+        }
+      })
     }),
 
   getLatest: publicProcedure.query(({ ctx }) => {
