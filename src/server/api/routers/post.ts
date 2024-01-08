@@ -57,11 +57,16 @@ export const postRouter = createTRPCRouter({
     .input(z.object({
       id: z.number(),
     }))
-    .mutation(async ({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       const { id } = input
 
       return ctx.db.post.findUnique({
-        where: { id }
+        where: { id },
+        include: {
+          user: true,
+          categories: true,
+          tags: true,
+        }
       })
     }),
 
@@ -71,7 +76,7 @@ export const postRouter = createTRPCRouter({
         .merge(BaseFilterInfo)
         .merge(BaseOrderInfo)
     )
-    .mutation(async ({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       const { page, pageSize, keywords } = input
 
       const where: Prisma.PostWhereInput = {}
@@ -88,8 +93,26 @@ export const postRouter = createTRPCRouter({
         skip: (page - 1) * pageSize,
         orderBy: {
           createdAt: 'desc',
+        },
+        include: {
+          user: true,
+          tags: true,
+          categories: true,
         }
       })
+    }),
+
+  hello: publicProcedure
+    .input(z.object({
+      text: z.string()
+    }))
+    .query(({ input }) => {
+      const { text } = input
+
+      return {
+        status: 'ok',
+        greeting: text,
+      }
     }),
 
   getLatest: publicProcedure.query(({ ctx }) => {

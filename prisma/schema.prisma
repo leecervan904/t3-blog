@@ -19,8 +19,8 @@ enum Role {
 
 model User {
     id        Int       @id @default(autoincrement())
-    email     String    @unique
-    name      String?
+    email     String    @unique @db.VarChar(50)
+    name      String?   @db.VarChar(30)
     role      Role      @default(Guest)
     Post      Post[]
     createdAt DateTime  @default(now())
@@ -32,8 +32,8 @@ model User {
 
 model Post {
     id         Int        @id @default(autoincrement())
-    title      String
-    content    String
+    title      String     @db.VarChar(255)
+    content    String     @db.LongText
     user       User       @relation(fields: [userId], references: [id])
     userId     Int
     categories Category[]
@@ -48,8 +48,8 @@ model Post {
 
 model Category {
     id        Int      @id @default(autoincrement())
-    name      String
-    slug      String   @unique
+    name      String   @db.VarChar(30)
+    slug      String   @unique @db.VarChar(30)
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     Post      Post[]
@@ -59,8 +59,8 @@ model Category {
 
 model Tag {
     id        Int      @id @default(autoincrement())
-    name      String
-    slug      String   @unique
+    name      String   @db.VarChar(30)
+    slug      String   @unique @db.VarChar(30)
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     Post      Post[]
@@ -72,7 +72,7 @@ model Tag {
 // created by user
 model Comment {
     id        Int       @id @default(autoincrement())
-    content   String
+    content   String    @db.VarChar(1000)
     user      User      @relation(fields: [userId], references: [id])
     userId    Int
     createdAt DateTime  @default(now())

@@ -28,8 +28,8 @@ function getItem(
 
 const items: MenuItem[] = [
   getItem(<Link href='/admin'>仪表板</Link>, '1', <MailOutlined />),
-  getItem(<Link href='/admin/post'>写文章</Link>, '2', <CalendarOutlined />),
-  getItem('草稿', '3', <CalendarOutlined />),
+  getItem(<Link href='/admin/post'>文章列表</Link>, '3', <CalendarOutlined />),
+  getItem(<Link href='/admin/post/create'>写文章</Link>, '2', <CalendarOutlined />),
   getItem('分类', '4', <CalendarOutlined />),
   getItem('用户管理', '5', <CalendarOutlined />),
   getItem(
@@ -52,7 +52,7 @@ export default function Page({ children }: { children: React.ReactNode }) {
         />
       </div>
 
-      <div className='flex-1 p-3'>
+      <div className='flex-1 p-3 overflow-auto'>
         {children}
       </div>
     </div>

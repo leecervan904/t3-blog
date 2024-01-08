@@ -1,80 +1,54 @@
-'use client'
+import Link from 'next/link'
+import dayjs from 'dayjs'
 
-import React from 'react';
-import { Button, Checkbox, Form, Input } from 'antd';
-import { api } from '~/trpc/react';
+import { api } from "~/trpc/server"
 
-type FieldType = {
-  title?: string;
-  abstract?: string;
-  published?: string;
-  content?: string;
-};
-
-export default function PostPage() {
-  const mutation = api.post.create.useMutation()
-
-  const onFinish = (values: FieldType) => {
-    console.log('Success:', values);
-    // return
-    mutation.mutate({
-      title: values.title!,
-      content: values.content!,
-    })
-  };
-
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
-  };
+export default async function Page({ searchParams }: {
+  searchParams: {
+    tag: string,
+    category: string,
+  }
+}) {
+  const posts = await api.post.pages.query({})
 
   return (
-    <div>
-      <Form
-        name="basic"
-        labelCol={{ span: 8 }}
-        wrapperCol={{ span: 16 }}
-        style={{ maxWidth: 600 }}
-        onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
-        autoComplete="off"
-      >
-        <Form.Item<FieldType>
-          label="标题"
-          name="title"
-          rules={[{ required: true, message: 'Please input your username!' }]}
-        >
-          <Input />
-        </Form.Item>
+    <>
+      <h2 className="my-5">
+        <div>post list</div>
+        <pre>{JSON.stringify(searchParams, null, 2)}</pre>
+      </h2>
 
-        <Form.Item<FieldType>
-          label="摘要"
-          name="abstract"
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item<FieldType>
-          label="内容"
-          name="content"
-          rules={[{ required: true, message: 'Please input your content!' }]}
-        >
-          <Input />
-        </Form.Item>
-
-        <Form.Item<FieldType>
-          name="published"
-          valuePropName="checked"
-          wrapperCol={{ offset: 8, span: 16 }}
-        >
-          <Checkbox>直接发布</Checkbox>
-        </Form.Item>
-
-        <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-          <Button type="primary" htmlType="submit">
-            Submit
-          </Button>
-        </Form.Item>
-      </Form>
-    </div>
+      <div className="flex flex-col gap-3">
+        {posts.map(post => (
+          <Link
+            key={post.id}
+            href={`/admin/post/${post.id}`}
+          >
+            <div className="
+              px-2 py-3 shadow rounded
+              transition-all
+              hover:shadow-2xl hover:bg-slate-300
+            ">
+              <h2 className="font-bold text-2xl text-blue-500 hover:text-blue-800">{post.title}</h2>
+              <p>{post.content.slice(0, 30) + '...'}</p>
+              <div className="flex justify-between text-slate-500 text-sm">
+                <span>
+                  <span>published: </span>
+                  <span>{post.published ? 'Yes' : 'No'}</span>
+                </span>
+                <span>
+                  <span>Created Time:</span>
+                  <span>{dayjs(post.createdAt).format('YYYY-MM-DD hh:mm:ss')}</span>
+                </span>
+                <span>
+                  <span>Updated Time:</span>
+                  <span>{dayjs(post.updatedAt).format('YYYY-MM-DD hh:mm:ss')}</span>
+                </span>
+              </div>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </>
   )
 }
