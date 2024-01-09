@@ -32,7 +32,7 @@
   @apply text-base;
 }
 
-pre {
+.markdown pre {
   /* padding: 5px; */
-  @apply my-2 p-3 rounded shadow-lg bg-slate-300;
+  /* @apply my-2 p-3 rounded shadow-lg bg-slate-300; */
 }

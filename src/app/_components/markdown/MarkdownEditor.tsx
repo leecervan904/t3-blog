@@ -1,38 +1,40 @@
-import { Input, type InputRef } from 'antd'
-import React, { type ChangeEvent, useCallback } from 'react'
-// import { Icon } from '@iconify/react';
+import { useCallback } from 'react'
+import { type editor } from 'monaco-editor'
+import MonacoEditor, { type ChangeHandler } from 'react-monaco-editor'
 
 export interface IMarkdownEditorProps {
+  width?: string,
+  height?: string,
   content: string,
-  onContentChange: (val: string) => void
+  options?: editor.IStandaloneEditorConstructionOptions,
+  onContentChange: (val?: string) => void
 }
 
-export default React.forwardRef((
-  { content, onContentChange }: IMarkdownEditorProps,
-  ref: React.Ref<InputRef>,
-  ) => {
-  const onChange = useCallback((e: ChangeEvent<HTMLTextAreaElement>) => {
-    onContentChange(e.target.value)
+export default function MarkdownEditor({
+  width,
+  height,
+  content,
+  onContentChange,
+  options,
+}: IMarkdownEditorProps) {
+  const onChange = useCallback<ChangeHandler>((val) => {
+    onContentChange(val)
   }, [])
 
   return (
-    <div>
-      {/* <Icon icon="mdi-light:home" /> */}
-
-      <Input.TextArea
-        ref={ref}
-        rows={20}
-        cols={20}
-        defaultValue={content}
-        styles={{
-          textarea: {
-            border: 'none',
-            outline: 'none',
-            boxShadow: 'none',
-          }
-        }}
-        onChange={onChange}
-      />
-    </div>
+    <MonacoEditor
+      width={width ?? '100%'}
+      height={height ?? '400'}
+      theme="vs-dark"
+      value={content}
+      options={{
+        language: 'markdown',
+        lineNumbers: 'off',
+        minimap: {
+          enabled: false,
+        },
+      }}
+      onChange={onChange}
+    />
   )
-})
+}

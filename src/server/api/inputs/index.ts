@@ -14,3 +14,8 @@ export const BaseFilterInfo = z.object({
 export const BaseOrderInfo = z.object({
   createAt: z.optional(z.string()).default(env.QUERY_INPUT_ORDER_TYPE),
 })
+
+export const BaseQueryDto = z.object({
+  ids: z.optional(z.array(z.number())).default([]),
+  keywords: z.optional(z.string()),
+})

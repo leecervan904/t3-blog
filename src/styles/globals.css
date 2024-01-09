@@ -2,4 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+/* @import './antd.css'; */
 @import './markdown.css';
+
+@layer base {
+  /* 1. 可以在这里修改第三方组件库的样式 */
+  /* button, [type='button'], [type='reset'], [type='submit'] {
+    @apply bg-[#1677ff];
+  } */
+}
+
+@layer components {
+  /* 2. 更好的做法是在这里修改第三方组件库的样式，参考 https://tailwindcss.com/docs/adding-custom-styles#adding-component-classes */
+  .ant-btn-primary {
+    @apply bg-[#1677ff];
+  }
+}

@@ -2,15 +2,28 @@ import { z } from 'zod'
 import { type Prisma } from '@prisma/client'
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc'
-import { BasePageInfo, BaseFilterInfo, BaseOrderInfo } from '~/server/api/inputs'
+import { BasePageInfo, BaseFilterInfo, BaseOrderInfo, BaseQueryDto } from '~/server/api/inputs'
+
+// mapped to prisma's schema
+export const CreatePostDto = z.object({
+  title: z.string().min(1),
+  abstract: z.optional(z.string()).default(''),
+  content: z.string().min(1),
+  categoryIds: z.optional(z.array(z.number())).default([]),
+  tagIds: z.optional(z.array(z.number())).default([]),
+  published: z.optional(z.boolean()).default(false),
+})
+
+export const UpdatePostDto = CreatePostDto
+  .partial()
+  .merge(z.object({ id: z.number() }))
 
 export const postRouter = createTRPCRouter({
   create: publicProcedure
-    .input(z.object({
-      title: z.string().min(1),
-      content: z.string().min(1),
-    }))
+    .input(CreatePostDto)
     .mutation(async ({ ctx, input }) => {
+      const { title, abstract, content, categoryIds, tagIds, published } = input
+
       const superAdmin = await ctx.db.user.findFirst({
         where: {
           role: 'SUPER_ADMIN'
@@ -19,55 +32,77 @@ export const postRouter = createTRPCRouter({
 
       return ctx.db.post.create({
         data: {
-          title: input.title,
-          content: input.content,
+          title,
+          abstract,
+          published,
+          content,
           userId: superAdmin!.id,
+          categories: {
+            connect: categoryIds.map(id => ({ id }))
+          },
+          tags: {
+            connect: tagIds.map(id => ({ id }))
+          },
         },
       });
     }),
 
   delete: publicProcedure
-    .input(z.object({
-      id: z.number(),
-    })).mutation(async ({ ctx, input }) => {
-      const { id } = input
-
+    .input(z.number())
+    .mutation(async ({ ctx, input: id }) => {
       return ctx.db.post.delete({
         where: { id }
       })
     }),
 
   update: publicProcedure
-    .input(z.object({
-      id: z.number(),
-      post: z.object({
-        title: z.optional(z.string().min(1)),
-      })
-    }))
+    .input(UpdatePostDto)
     .mutation(async ({ ctx, input }) => {
-      const { id, post } = input
+      const { id, categoryIds = [], tagIds = [], ...post } = input
 
       return ctx.db.post.update({
         where: { id },
-        data: post,
+        data: {
+          ...post,
+          categories: {
+            connect: categoryIds.map(id => ({ id })),
+          },
+          tags: {
+            connect: tagIds.map(id => ({ id })),
+          },
+        },
       })
     }),
 
   find: publicProcedure
-    .input(z.object({
-      id: z.number(),
-    }))
+    .input(BaseQueryDto)
     .query(async ({ ctx, input }) => {
-      const { id } = input
+      const { ids, keywords } = input
+      const where: Prisma.PostWhereInput = {}
 
-      return ctx.db.post.findUnique({
-        where: { id },
+      if (ids) {
+        where.id = { in: ids }
+      } else if (keywords) {
+        where.title = {
+          contains: keywords,
+        }
+      }
+
+      return ctx.db.post.findMany({
+        where: {
+          id: { in: ids }
+        },
         include: {
           user: true,
           categories: true,
           tags: true,
         }
       })
+
+      // return {
+      //   status: 'FAIL',
+      //   message: '必须传入 ids 或 keywords 来查询 category',
+      // }
     }),
 
   pages: publicProcedure

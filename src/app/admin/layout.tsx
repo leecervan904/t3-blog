@@ -52,7 +52,7 @@ export default function Page({ children }: { children: React.ReactNode }) {
         />
       </div>
 
-      <div className='flex-1 p-3 overflow-auto'>
+      <div className='relative flex-1 p-3 overflow-auto'>
         {children}
       </div>
     </div>

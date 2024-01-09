@@ -9,8 +9,13 @@ import { MarkdownViewer } from "~/app/_components/markdown";
 
 export default async function Page({ params }: { params: { id: string }}) {
   const { id } = params
-  const post = await api.post.find.query({ id: +id })
-  const { title, content, user, categories, tags, published, createdAt, updatedAt } = post!
+  const post = await api.post.find.query({ ids: [+id] })
+
+  if (!post.length) {
+    return <div>no data</div>
+  }
+
+  const { title, content, user, categories, tags, published, createdAt, updatedAt } = post[0]!
 
   if (!categories.some(v => v.id === 0)) {
     categories.unshift({
@@ -56,12 +61,12 @@ export default async function Page({ params }: { params: { id: string }}) {
         </span>
       </div>
 
-      <div className="flex justify-center gap-3 text-sm">
-        <div className="text-red-500 hover:text-red-300">
+      <div className="flex flex-wrap justify-center gap-3 text-sm">
+        <div className="flex-1 flex justify-end gap-2">
           {categories.map(({ id, name }) => (
             <Link
               key={id}
-              className="flex items-center justify-center gap-2"
+              className="inline-flex justify-center items-center gap-2 text-red-500 hover:text-red-300"
               href={`/admin/post?category=${id}`}
             >
               <span>{name}</span>
@@ -69,11 +74,11 @@ export default async function Page({ params }: { params: { id: string }}) {
           ))}
         </div>
 
-        <div className="text-blue-500 hover:text-blue-300">
+        <div className="flex-1 flex justify-start gap-2 text-blue-500 hover:text-blue-300">
           {tags.map(({ id, name}) => (
             <Link
               key={id}
-              className="flex items-center justify-center gap-2"
+              className="inline-flex justify-center items-center gap-2"
               href={`/admin/post?tag=${id}`}
             >
               {/* <Icon icon="carbon:tag" /> */}
@@ -85,6 +90,10 @@ export default async function Page({ params }: { params: { id: string }}) {
 
       <div className="my-3">
         <MarkdownViewer content={content} />
+      </div>
+
+      <div className="absolute p-3 bg-red-400 right-3 bottom-3 rounded">
+        <Link href={`/admin/post/edit?id=${id}`}>Edit</Link>
       </div>
     </div>
   )

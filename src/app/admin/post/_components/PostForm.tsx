@@ -54,9 +54,14 @@ function useCategory() {
   }
 }
 
-export default function PostPage() {
+export interface IPostFormProps {
+  type: 'create' | 'edit'
+  onCreate: (form: FieldType) => void
+  onSave: (form: FieldType) => void
+}
+
+export default function PostForm({ type, onCreate, onSave }: IPostFormProps) {
   const { onAddItem: onAddCategory, onDeleteItem, refetchItems, categories } = useCategory()
-  // const queryPost = api.post.pages.useQuery({})
   const mutation = api.post.create.useMutation()
 
   const [form] = useForm()

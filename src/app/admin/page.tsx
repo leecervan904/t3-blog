@@ -1,7 +1,13 @@
+import { Button } from 'antd'
+
 export default function AdminPage() {
   return (
-    <div>
-      admin content
-    </div>
+    <>
+      <div className="ant-btn-primary">
+        admin content
+      </div>
+
+      <Button type="primary">Button</Button>
+    </>
   )
 }
