@@ -57,7 +57,7 @@ export default function DynamicSelect({
     <Select
       placeholder="选择分类"
       mode="multiple"
-      open={true}
+      // open={true}
       value={value}
       onDropdownVisibleChange={onDropdownVisibleChange}
       options={items}

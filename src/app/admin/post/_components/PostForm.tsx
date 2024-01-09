@@ -8,13 +8,13 @@ import { api } from '~/trpc/react'
 import Markdown from '~/app/_components/markdown'
 import DynamicSelect, { type ISelectOption } from '~/app/_components/DynamicSelect'
 
-type FieldType = {
+export interface IPostForm {
   title: string;
   abstract?: string;
-  published?: string;
-  content?: string;
+  published?: boolean;
+  content: string;
   categoryIds?: number[];
-  tag?: number[];
+  tagIds?: number[];
 }
 
 function useCategory() {
@@ -56,13 +56,13 @@ function useCategory() {
 
 export interface IPostFormProps {
   type: 'create' | 'edit'
-  onCreate: (form: FieldType) => void
-  onSave: (form: FieldType) => void
+  defaultForm?: IPostForm
+  onCreate?: (form: IPostForm) => void
+  onSave?: (form: IPostForm) => void
 }
 
-export default function PostForm({ type, onCreate, onSave }: IPostFormProps) {
+export default function PostForm({ type, defaultForm, onCreate, onSave }: IPostFormProps) {
   const { onAddItem: onAddCategory, onDeleteItem, refetchItems, categories } = useCategory()
-  const mutation = api.post.create.useMutation()
 
   const [form] = useForm()
 
@@ -74,14 +74,10 @@ export default function PostForm({ type, onCreate, onSave }: IPostFormProps) {
     form.setFieldValue('categoryIds', val)
   }
 
-  const onFinish = (values: FieldType) => {
-    console.log('Success:', values)
-    // return
-    mutation.mutate({
-      title: values.title,
-      content: values.content!,
-      categoryIds: values.categoryIds,
-    })
+  const onFinish = (form: IPostForm) => {
+    console.log('Success:', form)
+    type === 'create' && onCreate?.(form)
+    type === 'edit' && onSave?.(form)
   }
 
   const onFinishFailed = (errorInfo: any) => {
@@ -96,11 +92,12 @@ export default function PostForm({ type, onCreate, onSave }: IPostFormProps) {
         form={form}
         labelCol={{ span: 2 }}
         wrapperCol={{ span: 22 }}
+        initialValues={defaultForm ?? {}}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
         autoComplete="off"
       >
-        <Form.Item<FieldType>
+        <Form.Item<IPostForm>
           label="标题"
           name="title"
           rules={[{ required: true, message: '必须填写标题' }]}
@@ -108,14 +105,14 @@ export default function PostForm({ type, onCreate, onSave }: IPostFormProps) {
           <Input />
         </Form.Item>
 
-        <Form.Item<FieldType>
+        <Form.Item<IPostForm>
           label="摘要"
           name="abstract"
         >
           <Input />
         </Form.Item>
 
-        <Form.Item<FieldType>
+        <Form.Item<IPostForm>
           label="分类"
           name="categoryIds"
         >
@@ -128,7 +125,7 @@ export default function PostForm({ type, onCreate, onSave }: IPostFormProps) {
           />
         </Form.Item>
 
-        <Form.Item<FieldType>
+        <Form.Item<IPostForm>
           name="published"
           valuePropName="checked"
           wrapperCol={{ offset: 2 }}
@@ -136,12 +133,12 @@ export default function PostForm({ type, onCreate, onSave }: IPostFormProps) {
           <Checkbox>直接发布</Checkbox>
         </Form.Item>
 
-        <Form.Item<FieldType>
+        <Form.Item<IPostForm>
           name="content"
           label="内容"
           rules={[{ required: true, message: '必须填写内容' }]}
         >
-          <Markdown onContentChange={setFormContent} />
+          <Markdown content={defaultForm?.content} onContentChange={setFormContent} />
         </Form.Item>
 
         <Form.Item className="text-center" wrapperCol={{ offset: 2 }}>

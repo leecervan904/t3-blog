@@ -13,6 +13,7 @@ specifiers:
   '@trpc/react-query': ^10.43.6
   '@trpc/server': ^10.43.6
   '@types/eslint': ^8.44.7
+  '@types/lodash-es': ^4.17.12
   '@types/node': ^18.17.0
   '@types/react': ^18.2.37
   '@types/react-dom': ^18.2.15
@@ -23,6 +24,7 @@ specifiers:
   autoprefixer: ^10.4.14
   dayjs: ^1.11.10
   eslint: ^8.54.0
+  lodash-es: ^4.17.21
   monaco-editor: ^0.45.0
   next: ^14.0.3
   postcss: ^8.4.31
@@ -57,6 +59,7 @@ dependencies:
   '@trpc/server': registry.npmmirror.com/@trpc/server/10.45.0
   antd: registry.npmmirror.com/antd/5.12.6_react-dom@18.2.0+react@18.2.0
   dayjs: registry.npmmirror.com/dayjs/1.11.10
+  lodash-es: registry.npmmirror.com/lodash-es/4.17.21
   monaco-editor: registry.npmmirror.com/monaco-editor/0.45.0
   next: registry.npmmirror.com/next/14.0.4_react-dom@18.2.0+react@18.2.0
   prism-react-renderer: registry.npmmirror.com/prism-react-renderer/2.3.1_react@18.2.0
@@ -75,6 +78,7 @@ dependencies:
 devDependencies:
   '@next/eslint-plugin-next': registry.npmmirror.com/@next/eslint-plugin-next/14.0.4
   '@types/eslint': registry.npmmirror.com/@types/eslint/8.56.0
+  '@types/lodash-es': registry.npmmirror.com/@types/lodash-es/4.17.12
   '@types/node': registry.npmmirror.com/@types/node/18.19.4
   '@types/react': registry.npmmirror.com/@types/react/18.2.46
   '@types/react-dom': registry.npmmirror.com/@types/react-dom/18.2.18
@@ -880,6 +884,20 @@ packages:
     name: '@types/katex'
     version: 0.16.7
     dev: false
+
+  registry.npmmirror.com/@types/lodash-es/4.17.12:
+    resolution: {integrity: sha512-0NgftHUcV4v34VhXm8QBSftKVXtbkBG3ViCjs6+eJ5a6y6Mi/jiFGPc1sC7QK+9BFhWrURE3EOggmWaSxL9OzQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/lodash-es/-/lodash-es-4.17.12.tgz}
+    name: '@types/lodash-es'
+    version: 4.17.12
+    dependencies:
+      '@types/lodash': registry.npmmirror.com/@types/lodash/4.14.202
+    dev: true
+
+  registry.npmmirror.com/@types/lodash/4.14.202:
+    resolution: {integrity: sha512-OvlIYQK9tNneDlS0VN54LLd5uiPCBOp7gS5Z0f1mjoJYBrtStzgmJBxONW3U6OZqdtNzZPmn9BS/7WI7BFFcFQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/lodash/-/lodash-4.14.202.tgz}
+    name: '@types/lodash'
+    version: 4.14.202
+    dev: true
 
   registry.npmmirror.com/@types/mdast/4.0.3:
     resolution: {integrity: sha512-LsjtqsyF+d2/yFOYaN22dHZI1Cpwkrj+g06G8+qtUKlhovPW89YhqSnfKtMbkgmEtYpH2gydRNULd6y8mciAFg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/mdast/-/mdast-4.0.3.tgz}
@@ -2528,6 +2546,12 @@ packages:
     dependencies:
       p-locate: registry.npmmirror.com/p-locate/5.0.0
     dev: true
+
+  registry.npmmirror.com/lodash-es/4.17.21:
+    resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/lodash-es/-/lodash-es-4.17.21.tgz}
+    name: lodash-es
+    version: 4.17.21
+    dev: false
 
   registry.npmmirror.com/lodash.merge/4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/lodash.merge/-/lodash.merge-4.6.2.tgz}
