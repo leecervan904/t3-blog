@@ -3,6 +3,7 @@
 import { api } from '~/trpc/react'
 import PostForm, { type IPostForm } from '~/app/admin/post/_components/PostForm'
 import { useRouter } from 'next/navigation'
+import { useCallback } from 'react'
 
 export default function CreatePostPage() {
   const router = useRouter()
@@ -13,16 +14,16 @@ export default function CreatePostPage() {
     }
   })
 
-  const onCreate = (form: IPostForm) => {
-    createAction.mutate(form)
-  }
+  const onConfirm = useCallback((form: IPostForm) => {
+    createAction.mutate({
+      ...form,
+      categoryIds: form.categoryIds?.map(id => +id),
+    })
+  }, [])
 
   return (
     <>
-      <PostForm
-        type="create"
-        onCreate={onCreate}
-      />
+      <PostForm onConfirm={onConfirm} />
     </>
   )
 }

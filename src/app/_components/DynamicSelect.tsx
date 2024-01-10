@@ -4,55 +4,48 @@ import { useState } from 'react'
 import { Form, Input, Select, Divider, Button, Popconfirm } from 'antd'
 import { CloseOutlined, QuestionCircleOutlined } from '@ant-design/icons'
 
-export interface ISelectOption {
-  label: string | number
-  value: string | number
-}
+import { type IKeyValueOption } from '~/hooks/useKeyValueData'
 
 export interface IDynamicSelectProps {
-  items: ISelectOption[]
-  initialValue?: number[]
-  onAddItem: (item: ISelectOption) => Promise<void>
+  items: IKeyValueOption[]
+  initialValue?: string[]
+  onGetData: () => void
+  onCreateItem: (item: IKeyValueOption) => Promise<void>
   onDeleteItem: (id: number) => Promise<void>
-  onGetItems: () => void
   onSelectionChange: (val: number[]) => void
 }
 
 export default function DynamicSelect({
   items,
   initialValue,
-  onAddItem,
+  onCreateItem,
   onDeleteItem,
-  onGetItems,
+  onGetData,
   onSelectionChange,
 }: IDynamicSelectProps) {
-  // const [items, setItems] = useState<ISelectOption[]>([])
-  const [value, setValue] = useState<number[]>([])
+  const [value, setValue] = useState<string[]>(initialValue ?? [])
 
   const onDropdownVisibleChange = async (open: boolean) => {
-    if (open && onGetItems) {
-      onGetItems()
-    }
+    open && onGetData()
   }
 
-  const onFinish = (item: ISelectOption) => {
-    onAddItem(item)
+  const onFinish = (item: IKeyValueOption) => {
+    onCreateItem(item)
       .then(() => {
-        onGetItems()
+        onGetData()
       })
       .catch(console.log)
   }
 
-  const onDelete = async (id: number) => {
-    // e.stopPropagation()
+  const onDelete = async (id: string) => {
     console.log('will delete item', id);
-    await onDeleteItem(id)
-    onGetItems()
+    await onDeleteItem(+id)
+    onGetData()
   }
 
-  const onChange = (val: number[]) => {
+  const onChange = (val: string[]) => {
     setValue(val)
-    onSelectionChange(val)
+    onSelectionChange(val.map(v => +v))
   }
 
   return (
@@ -60,10 +53,10 @@ export default function DynamicSelect({
       placeholder="选择分类"
       mode="multiple"
       // open={true}
+      options={items}
       defaultValue={initialValue}
       value={value}
       onDropdownVisibleChange={onDropdownVisibleChange}
-      options={items}
       onChange={onChange}
       optionRender={option => (
         <div className="flex justify-between">
@@ -72,7 +65,7 @@ export default function DynamicSelect({
             title="删除分类"
             description="删除后，所属文章的分类归纳为未分类"
             icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
-            onConfirm={() => onDelete(option.value as number)}
+            onConfirm={() => onDelete(option.value as string)}
           >
             <CloseOutlined />
           </Popconfirm>
@@ -89,7 +82,7 @@ export default function DynamicSelect({
             autoComplete="off"
             layout="inline"
           >
-            <Form.Item<ISelectOption>
+            <Form.Item<IKeyValueOption>
               name="label"
               label="label"
               rules={[{ required: true, message: '必须填写 label' }]}
@@ -99,7 +92,7 @@ export default function DynamicSelect({
               />
             </Form.Item>
 
-            <Form.Item<ISelectOption>
+            <Form.Item<IKeyValueOption>
               name="value"
               label="value"
               rules={[{ required: true, message: '必须填写 value' }]}

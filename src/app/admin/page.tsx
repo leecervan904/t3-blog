@@ -1,13 +1,5 @@
-import { Button } from 'antd'
+import { redirect } from "next/navigation"
 
-export default function AdminPage() {
-  return (
-    <>
-      <div className="ant-btn-primary">
-        admin content
-      </div>
-
-      <Button type="primary">Button</Button>
-    </>
-  )
+export default async function AdminPage() {
+  redirect('/admin/dashboard')
 }

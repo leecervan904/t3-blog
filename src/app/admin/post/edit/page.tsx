@@ -17,10 +17,11 @@ export default function Page({ searchParams }: IEditPageProps) {
   const { data, isLoading } = api.post.find.useQuery({ ids: [+id] })
   const updateAction = api.post.update.useMutation()
 
-  const onSave = useCallback((form: IPostForm) => {
+  const onConfirm = useCallback((form: IPostForm) => {
     updateAction.mutate({
       id: +id,
       ...form,
+      categoryIds: form.categoryIds?.map(id => +id)
     })
   }, [])
 
@@ -39,16 +40,12 @@ export default function Page({ searchParams }: IEditPageProps) {
     'abstract',
     'content',
   ])
-  defaultForm.categoryIds = post.categories.map(v => +v.id)
+  defaultForm.categoryIds = post.categories.map(v => `${v.id}`)
   defaultForm.tagIds = post.tags.map(v => +v.id)
 
   return (
     <>
-      <PostForm
-        type="edit"
-        defaultForm={defaultForm}
-        onSave={onSave}
-      />
+      <PostForm defaultForm={defaultForm} onConfirm={onConfirm} />
     </>
   )
 }

@@ -1,89 +1,59 @@
 'use client'
 
-import React from 'react'
+import React, { useCallback } from 'react'
 import { Button, Checkbox, Form, Input } from 'antd'
-import { useForm } from 'antd/es/form/Form'
+import { type FormProps, useForm } from 'antd/es/form/Form'
 
-import { api } from '~/trpc/react'
 import Markdown from '~/app/_components/markdown'
-import DynamicSelect, { type ISelectOption } from '~/app/_components/DynamicSelect'
+import DynamicSelect from '~/app/_components/DynamicSelect'
+import { useCategory } from '~/hooks/useKeyValueData'
 
 export interface IPostForm {
   title: string;
   abstract?: string;
   published?: boolean;
   content: string;
-  categoryIds?: number[];
+  categoryIds?: string[];
   tagIds?: number[];
 }
 
-function useCategory() {
-  const { data: categories, refetch } = api.category.findAll.useQuery()
-  const createAction = api.category.create.useMutation()
-  const updateAction = api.category.update.useMutation()
-  const deleteAction = api.category.delete.useMutation()
-
-  const onGetItems = (categories ?? []).map(v => ({ label: v.name, value: v.slug }))
-
-  const onAddItem = async (item: ISelectOption) => {
-    return createAction.mutate({
-      name: `${item.label}`,
-      slug: `${item.value}`,
-    })
-  }
-
-  const onUpdateItem = (id: number, item: Partial<ISelectOption>) => {
-    return updateAction.mutate({
-      id,
-      name: `${item.label}`,
-      slug: `${item.value}`,
-    })
-  }
-
-  const onDeleteItem = (id: number) => {
-    return deleteAction.mutate(id)
-  }
-
-  return {
-    categories,
-    onGetItems,
-    refetchItems: refetch,
-    onAddItem,
-    onUpdateItem,
-    onDeleteItem,
-  }
-}
-
 export interface IPostFormProps {
-  type: 'create' | 'edit'
   defaultForm?: IPostForm
-  onCreate?: (form: IPostForm) => void
-  onSave?: (form: IPostForm) => void
+  confirmText?: string
+  onConfirm?: (form: IPostForm) => void
 }
 
-export default function PostForm({ type, defaultForm, onCreate, onSave }: IPostFormProps) {
-  const { onAddItem: onAddCategory, onDeleteItem, refetchItems, categories } = useCategory()
+export default function PostForm({
+  defaultForm,
+  confirmText = '提交',
+  onConfirm,
+}: IPostFormProps) {
+  const {
+    data: categories,
+    onCreateItem: onCreateCategory,
+    onDeleteItem: onDeleteCategory,
+    onGetData: onGetCategories,
+  } = useCategory()
 
   const [form] = useForm()
 
-  const setFormContent = (val: string) => {
+  const setFormContent = useCallback((val: string) => {
     form.setFieldValue('content', val)
-  }
+  }, [])
 
-  const setFormCategory = (val: number[]) => {
+  const setFormCategory = useCallback((val: number[]) => {
     form.setFieldValue('categoryIds', val)
-  }
+  }, [])
 
-  const onFinish = (form: IPostForm) => {
+  const onFinish = useCallback((form: IPostForm) => {
     console.log('Success:', form)
-    type === 'create' && onCreate?.(form)
-    type === 'edit' && onSave?.(form)
-  }
+    onConfirm && onConfirm(form)
+  }, [])
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('form', form.getFieldValue('content'));
+  const onFinishFailed = useCallback<Required<FormProps>['onFinishFailed']>((errorInfo) => {
+    // console.log('form', form.getFieldValue('content'));
     console.log('Failed:', errorInfo);
-  }
+  }, [])
 
   return (
     <div className="py-5">
@@ -117,11 +87,11 @@ export default function PostForm({ type, defaultForm, onCreate, onSave }: IPostF
           name="categoryIds"
         >
           <DynamicSelect
-            items={(categories ?? []).map(v => ({ label: v.name, value: v.id }))}
+            items={categories}
             initialValue={defaultForm?.categoryIds}
-            onAddItem={onAddCategory}
-            onDeleteItem={onDeleteItem}
-            onGetItems={refetchItems}
+            onGetData={onGetCategories}
+            onCreateItem={onCreateCategory}
+            onDeleteItem={onDeleteCategory}
             onSelectionChange={setFormCategory}
           />
         </Form.Item>
@@ -144,7 +114,7 @@ export default function PostForm({ type, defaultForm, onCreate, onSave }: IPostF
 
         <Form.Item className="text-center" wrapperCol={{ offset: 2 }}>
           <Button type="primary" htmlType="submit">
-            提交
+            { confirmText }
           </Button>
         </Form.Item>
       </Form>

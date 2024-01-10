@@ -1,3 +1,6 @@
+
+
+
 ## 渲染
 
 
@@ -207,3 +210,29 @@ Data Revalidation / fetch | Yes | Yes | Yes
 - Edge：适合开发 小型、简单的功能以低延迟交付动态、个性化的内容，但是 Vercel 上的 Edge Runtime 中执行的代码体积限制为 4 MB
 - Node.js：可以访问所有 Node.js API 以及依赖它们的所有 npm 包，但是启动速度较慢
 - Vercel Serverless：折中的可扩展方案，能够处理比 Edge 更复杂的的计算负载、代码体积支持 50MB？但是需要数百毫秒的时间来启动路由
+
+
+
+
+## 路由
+
+重定向：Next >= 13，可以使用 redirect 直接重定向
+```tsx
+// /app/admin/page.tsx
+import { redirect } from "next/navigation"
+
+export default async function AdminPage() {
+  redirect('/admin/dashboard') // 重定向
+}
+
+
+// /app/admin/dashboard.tsx
+export default async function Page() {
+  return (
+    <div className="ant-btn-primary">
+      admin content
+    </div>
+  )
+}
+```
+

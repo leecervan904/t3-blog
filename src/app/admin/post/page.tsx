@@ -1,29 +1,23 @@
 import Link from 'next/link'
-import dayjs from 'dayjs'
 
 import { api } from "~/trpc/server"
+import { formatDateString } from '~/util'
+import PostQueryForm, { type IPostPageParams } from './_components/PostQueryForm'
 
-export default async function Page({ searchParams }: {
-  searchParams: {
-    tag: string,
-    category: string,
-  }
-}) {
+export interface IPostPageProps {
+  searchParams: IPostPageParams
+}
+
+export default async function Page({ searchParams }: IPostPageProps) {
   const posts = await api.post.pages.query({})
 
   return (
     <>
-      <h2 className="my-5">
-        <div>post list</div>
-        <pre>{JSON.stringify(searchParams, null, 2)}</pre>
-      </h2>
+      <PostQueryForm defaultForm={searchParams} />
 
       <div className="flex flex-col gap-3">
         {posts.map(post => (
-          <Link
-            key={post.id}
-            href={`/admin/post/${post.id}`}
-          >
+          <Link key={post.id} href={`/admin/post/${post.id}`}>
             <div className="
               px-2 py-3 shadow rounded
               transition-all
@@ -38,11 +32,11 @@ export default async function Page({ searchParams }: {
                 </span>
                 <span>
                   <span>Created Time:</span>
-                  <span>{dayjs(post.createdAt).format('YYYY-MM-DD hh:mm:ss')}</span>
+                  <span>{formatDateString(post.createdAt)}</span>
                 </span>
                 <span>
                   <span>Updated Time:</span>
-                  <span>{dayjs(post.updatedAt).format('YYYY-MM-DD hh:mm:ss')}</span>
+                  <span>{formatDateString(post.updatedAt)}</span>
                 </span>
               </div>
             </div>
