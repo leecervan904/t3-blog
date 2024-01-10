@@ -32,7 +32,7 @@ export default function InnerMarkdown({ content, onContentChange }: MarkdownProp
         />
       </div>
 
-      <div className="w-1/2 px-2 bg-[#0f1217]">
+      <div className="w-1/2 px-2">
         <MarkdownViewer content={value} />
       </div>
     </div>

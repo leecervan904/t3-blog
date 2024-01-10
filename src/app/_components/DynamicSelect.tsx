@@ -11,6 +11,7 @@ export interface ISelectOption {
 
 export interface IDynamicSelectProps {
   items: ISelectOption[]
+  initialValue?: number[]
   onAddItem: (item: ISelectOption) => Promise<void>
   onDeleteItem: (id: number) => Promise<void>
   onGetItems: () => void
@@ -19,6 +20,7 @@ export interface IDynamicSelectProps {
 
 export default function DynamicSelect({
   items,
+  initialValue,
   onAddItem,
   onDeleteItem,
   onGetItems,
@@ -58,6 +60,7 @@ export default function DynamicSelect({
       placeholder="选择分类"
       mode="multiple"
       // open={true}
+      defaultValue={initialValue}
       value={value}
       onDropdownVisibleChange={onDropdownVisibleChange}
       options={items}

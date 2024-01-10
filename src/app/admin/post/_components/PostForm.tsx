@@ -118,6 +118,7 @@ export default function PostForm({ type, defaultForm, onCreate, onSave }: IPostF
         >
           <DynamicSelect
             items={(categories ?? []).map(v => ({ label: v.name, value: v.id }))}
+            initialValue={defaultForm?.categoryIds}
             onAddItem={onAddCategory}
             onDeleteItem={onDeleteItem}
             onGetItems={refetchItems}
