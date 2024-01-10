@@ -22,6 +22,7 @@ specifiers:
   '@typescript-eslint/parser': ^6.11.0
   antd: ^5.12.6
   autoprefixer: ^10.4.14
+  clsx: ^2.1.0
   dayjs: ^1.11.10
   eslint: ^8.54.0
   lodash-es: ^4.17.21
@@ -58,6 +59,7 @@ dependencies:
   '@trpc/react-query': registry.npmmirror.com/@trpc/react-query/10.45.0_2421bdd4249fd8194de68f35fbabab82
   '@trpc/server': registry.npmmirror.com/@trpc/server/10.45.0
   antd: registry.npmmirror.com/antd/5.12.6_react-dom@18.2.0+react@18.2.0
+  clsx: registry.npmmirror.com/clsx/2.1.0
   dayjs: registry.npmmirror.com/dayjs/1.11.10
   lodash-es: registry.npmmirror.com/lodash-es/4.17.21
   monaco-editor: registry.npmmirror.com/monaco-editor/0.45.0

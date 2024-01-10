@@ -9,6 +9,7 @@ import {
 } from '@ant-design/icons';
 import { Menu } from 'antd';
 import type { MenuProps } from 'antd/es/menu';
+import { usePathname } from 'next/navigation';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -27,9 +28,9 @@ function getItem(
 }
 
 const items: MenuItem[] = [
-  getItem(<Link href='/admin'>仪表板</Link>, '1', <MailOutlined />),
-  getItem(<Link href='/admin/post'>文章列表</Link>, '3', <CalendarOutlined />),
-  getItem(<Link href='/admin/post/create'>写文章</Link>, '2', <CalendarOutlined />),
+  getItem(<Link href='/admin'>仪表板</Link>, '/admin', <MailOutlined />),
+  getItem(<Link href='/admin/post'>文章列表</Link>, '/admin/post', <CalendarOutlined />),
+  getItem(<Link href='/admin/post/create'>写文章</Link>, '/admin/post/create', <CalendarOutlined />),
   getItem('分类', '4', <CalendarOutlined />),
   getItem('用户管理', '5', <CalendarOutlined />),
   getItem(
@@ -42,13 +43,21 @@ const items: MenuItem[] = [
 ];
 
 export default function Page({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname()
+  const [current, setCurrent] = useState(pathname)
+
+  const onClick: MenuProps['onClick'] = e => {
+    setCurrent(e.key)
+  }
+
   return (
     <div className="flex h-[100vh]">
       <div className='w-[256px] px-3 pt-20 bg-[#001525]'>
         <Menu
-          defaultSelectedKeys={['1']}
           theme="dark"
           items={items}
+          selectedKeys={[current]}
+          onClick={onClick}
         />
       </div>
 
