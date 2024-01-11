@@ -1,7 +1,6 @@
 'use client'
 
 import { Spin } from "antd"
-import { useCallback } from "react"
 import { api } from "~/trpc/react"
 import PostForm, { type IPostForm } from "../_components/PostForm"
 import { pick } from "lodash-es"
@@ -17,13 +16,13 @@ export default function Page({ searchParams }: IEditPageProps) {
   const { data, isLoading } = api.post.find.useQuery({ ids: [+id] })
   const updateAction = api.post.update.useMutation()
 
-  const onConfirm = useCallback((form: IPostForm) => {
+  const onConfirm = (form: IPostForm) => {
     updateAction.mutate({
       id: +id,
       ...form,
       categoryIds: form.categoryIds?.map(id => +id)
     })
-  }, [])
+  }
 
   if (isLoading) {
     return <Spin />

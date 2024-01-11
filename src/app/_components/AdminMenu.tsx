@@ -40,7 +40,7 @@ const items: MenuItem[] = [
   ),
 ];
 
-export default function AdminMenu() {
+export default function AdminMenu({ open }: { open: boolean }) {
   const pathname = usePathname()
   const [current, setCurrent] = useState(pathname)
 
@@ -50,10 +50,12 @@ export default function AdminMenu() {
 
   return (
     <Menu
+      mode="inline"
       theme="dark"
       items={items}
       selectedKeys={[current]}
       onClick={onClick}
+      inlineCollapsed={!open}
     />
   )
 }

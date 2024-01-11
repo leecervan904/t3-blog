@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 
 import { api } from '~/trpc/react'
 
@@ -10,6 +10,7 @@ export interface IKeyValueOption {
 // type FirstParameterType<T> = T extends (_: infer U) => unknown ? U : never
 
 function transformFn(data: Array<{ id: number, name: string }>) {
+  console.log('catch new data:', data);
   return data.map(v => ({ label: v.name, value: `${v.id}` }))
 }
 
@@ -19,11 +20,13 @@ export function useCategory(enabled = true) {
   const updateAction = api.category.update.useMutation()
   const deleteAction = api.category.delete.useMutation()
 
-  const [transformData, setTransformData] = useState<IKeyValueOption[]>(transformFn(data))
+  // const [transformData, setTransformData] = useState<IKeyValueOption[]>(transformFn(data))
 
-  useEffect(() => {
-    setTransformData(transformFn(data))
-  }, [data])
+  // useEffect(() => {
+  //   setTransformData(transformFn(data))
+  // }, [data])
+
+  const transformData = useMemo(() => transformFn(data), [data])
 
   const onCreateItem = async ({ label, value }: IKeyValueOption) => {
     return createAction.mutate({ name: label, slug: value })

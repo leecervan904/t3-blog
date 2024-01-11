@@ -1,7 +1,8 @@
-import { type Config } from "tailwindcss";
-import { fontFamily } from "tailwindcss/defaultTheme";
+import { type Config } from "tailwindcss"
+// import defaultConfig from "tailwindcss/stubs/config.full"
+import { fontFamily } from "tailwindcss/defaultTheme"
 
-export default {
+const customConfig = {
   content: ["./src/**/*.tsx"],
   theme: {
     extend: {
@@ -16,4 +17,10 @@ export default {
     // 参考 https://tailwindcss.com/docs/preflight
     // preflight: false,
   },
-} satisfies Config;
+}
+
+// export const finalConfig = {
+// ...defaultConfig
+// }
+
+export default customConfig satisfies Config;

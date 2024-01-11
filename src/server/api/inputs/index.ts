@@ -9,6 +9,7 @@ export const BasePageInfo = z.object({
 
 export const BaseFilterInfo = z.object({
   keywords: z.optional(z.string().default('')),
+  categoryIds: z.optional(z.array(z.number())).default([])
 })
 
 export const BaseOrderInfo = z.object({

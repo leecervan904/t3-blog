@@ -3,6 +3,8 @@ import { type Prisma } from '@prisma/client'
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc'
 import { BasePageInfo, BaseFilterInfo, BaseOrderInfo, BaseQueryDto } from '~/server/api/inputs'
+import dayjs from 'dayjs'
+import { fillOverDaysData } from '~/util'
 
 // mapped to prisma's schema
 export const CreatePostDto = z.object({
@@ -112,13 +114,21 @@ export const postRouter = createTRPCRouter({
         .merge(BaseOrderInfo)
     )
     .query(async ({ ctx, input }) => {
-      const { page, pageSize, keywords } = input
+      const { page, pageSize, keywords, categoryIds } = input
 
       const where: Prisma.PostWhereInput = {}
 
       if (keywords) {
         where.title = {
           contains: keywords,
+        }
+      }
+
+      if (categoryIds.length) {
+        where.categories = {
+          some: {
+            id: { in: categoryIds }
+          }
         }
       }
 
@@ -135,6 +145,32 @@ export const postRouter = createTRPCRouter({
           categories: true,
         }
       })
+    }),
+
+  getSummarize: publicProcedure
+    .query(async ({ ctx }) => {
+      const dailyPostsQuery = ctx.db.$queryRaw<Array<{ postDate: string, postCount: number }>>`
+        SELECT
+          DATE_FORMAT( createdAt, '%Y-%m-%d' ) AS postDate,
+          COUNT(*) AS postCount
+        FROM Post
+        WHERE
+          createdAt >= DATE_SUB( CURDATE(), INTERVAL 7 DAY )
+        GROUP BY postDate
+        ORDER BY postDate;
+      `;
+
+      const [postCount, categoryCount, dailyPosts] = await Promise.all([
+        ctx.db.post.count(),
+        ctx.db.category.count(),
+        dailyPostsQuery,
+      ])
+
+      return {
+        postCount,
+        categoryCount,
+        dailyPosts: fillOverDaysData(dailyPosts.map(v => ({ date: v.postDate, count: Number(v.postCount) })), 7),
+      }
     }),
 
   hello: publicProcedure

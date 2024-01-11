@@ -6,7 +6,7 @@ import { sleep } from '~/util';
 
 export const CreateCategoryDto = z.object({
   name: z.string().min(1),
-  slug: z.string().min(1),
+  slug: z.optional(z.string()),
 })
 
 export const UpdateCategoryDto = CreateCategoryDto
@@ -17,7 +17,7 @@ export const categoryRouter = createTRPCRouter({
   create: publicProcedure
     .input(CreateCategoryDto)
     .mutation(async ({ ctx, input }) => {
-      const { name, slug } = input
+      const { name, slug = name } = input
 
       return ctx.db.category.create({
         data: { name, slug }

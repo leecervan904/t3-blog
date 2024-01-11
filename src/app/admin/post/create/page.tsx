@@ -3,9 +3,8 @@
 import { api } from '~/trpc/react'
 import PostForm, { type IPostForm } from '~/app/admin/post/_components/PostForm'
 import { useRouter } from 'next/navigation'
-import { useCallback } from 'react'
 
-export default function CreatePostPage() {
+export default function Page() {
   const router = useRouter()
   const createAction = api.post.create.useMutation({
     onSuccess(createdPost, _postForm) {
@@ -14,12 +13,12 @@ export default function CreatePostPage() {
     }
   })
 
-  const onConfirm = useCallback((form: IPostForm) => {
+  const onConfirm = (form: IPostForm) => {
     createAction.mutate({
       ...form,
       categoryIds: form.categoryIds?.map(id => +id),
     })
-  }, [])
+  }
 
   return (
     <>

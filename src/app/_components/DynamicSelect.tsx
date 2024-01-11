@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
-import { Form, Input, Select, Divider, Button, Popconfirm } from 'antd'
-import { CloseOutlined, QuestionCircleOutlined } from '@ant-design/icons'
+import { memo, useState } from 'react'
+import { Form, Input, Select, Divider, Button, Popconfirm, Tooltip } from 'antd'
+import { DeleteFilled, QuestionCircleOutlined } from '@ant-design/icons'
+import clsx from 'clsx'
 
 import { type IKeyValueOption } from '~/hooks/useKeyValueData'
 
@@ -15,7 +16,7 @@ export interface IDynamicSelectProps {
   onSelectionChange: (val: number[]) => void
 }
 
-export default function DynamicSelect({
+function DynamicSelect({
   items,
   initialValue,
   onCreateItem,
@@ -23,51 +24,70 @@ export default function DynamicSelect({
   onGetData,
   onSelectionChange,
 }: IDynamicSelectProps) {
-  const [value, setValue] = useState<string[]>(initialValue ?? [])
+  const [open, setOpen] = useState(false)
+  // const [hoverItem, setHoverItem] = useState<string | number | undefined>('1')
 
   const onDropdownVisibleChange = async (open: boolean) => {
-    open && onGetData()
+    // open && onGetData()
+    // setOpen(open)
   }
 
   const onFinish = (item: IKeyValueOption) => {
     onCreateItem(item)
       .then(() => {
-        onGetData()
+        setTimeout(() => {
+          onGetData()
+        }, 100)
       })
       .catch(console.log)
   }
 
-  const onDelete = async (id: string) => {
+  const onDelete = async (id?: string | number) => {
     console.log('will delete item', id);
-    await onDeleteItem(+id)
-    onGetData()
+    if (id !== undefined) {
+      onDeleteItem(+id)
+        .then(() => {
+          setTimeout(() => {
+            onGetData()
+          }, 100);
+        })
+        .catch(console.log)
+    }
   }
 
   const onChange = (val: string[]) => {
-    setValue(val)
+    // setOpen(false)
     onSelectionChange(val.map(v => +v))
   }
+
+  // const onOptionHover = (item?: string | number) => {
+  //   setHoverItem(item)
+  // }
 
   return (
     <Select
       placeholder="选择分类"
       mode="multiple"
-      // open={true}
+      // open={open}
+      // onClick={() => setOpen(true)}
       options={items}
       defaultValue={initialValue}
-      value={value}
       onDropdownVisibleChange={onDropdownVisibleChange}
       onChange={onChange}
+      menuItemSelectedIcon={null}
       optionRender={option => (
-        <div className="flex justify-between">
+        <div className="flex justify-between"
+          // onMouseEnter={() => onOptionHover(option.value)}
+          // onMouseLeave={() => onOptionHover()}
+        >
           <span>{option.label}</span>
           <Popconfirm
             title="删除分类"
-            description="删除后，所属文章的分类归纳为未分类"
+            description="确定后会删除该分类，但不会删除分类所属的文章。"
             icon={<QuestionCircleOutlined style={{ color: 'red' }} />}
             onConfirm={() => onDelete(option.value as string)}
           >
-            <CloseOutlined />
+            <DeleteFilled onClick={e => e.stopPropagation() } />
           </Popconfirm>
         </div>
       )}
@@ -111,3 +131,5 @@ export default function DynamicSelect({
     />
   )
 }
+
+export default memo(DynamicSelect)
