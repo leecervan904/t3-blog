@@ -26,7 +26,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`overflow-hidden h-[100vh] font-sans ${inter.variable}`}>
         <TRPCReactProvider cookies={cookies().toString()}>
-          <div className="overflow-hidden flex flex-col h-full">
+          <div className="overflow-hidden relative flex flex-col h-full">
             <Navbar />
 
             <div className="overflow-auto flex-1 w-full bg-white dark:bg-[#111729]">

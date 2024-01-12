@@ -1,9 +1,10 @@
+import { type Config } from "tailwindcss"
 import { useMediaQuery } from 'react-responsive'
 import resolveConfig from 'tailwindcss/resolveConfig'
 
 import tailwindConfig from '../../tailwind.config'
 
-const { screens: breakpoints } = resolveConfig(tailwindConfig).theme
+const { screens: breakpoints } = resolveConfig(tailwindConfig as Config).theme
 
 // type BreakpointKey = keyof typeof breakpoints
 
