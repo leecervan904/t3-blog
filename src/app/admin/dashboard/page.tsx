@@ -17,6 +17,8 @@ export default async function Page() {
         </div>
       </div>
 
+      <pre>{JSON.stringify(dailyPosts, null, 2)}</pre>
+
       <div>
         <LineChart data={dailyPosts} xField="date" yField="count" />
       </div>

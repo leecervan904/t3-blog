@@ -3,8 +3,6 @@ import { type Prisma } from '@prisma/client'
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc'
 import { BasePageInfo, BaseFilterInfo, BaseOrderInfo, BaseQueryDto } from '~/server/api/inputs'
-import dayjs from 'dayjs'
-import { fillOverDaysData } from '~/util'
 
 // mapped to prisma's schema
 export const CreatePostDto = z.object({
@@ -151,11 +149,31 @@ export const postRouter = createTRPCRouter({
     .query(async ({ ctx }) => {
       const dailyPostsQuery = ctx.db.$queryRaw<Array<{ postDate: string, postCount: number }>>`
         SELECT
-          DATE_FORMAT( createdAt, '%Y-%m-%d' ) AS postDate,
-          COUNT(*) AS postCount
-        FROM Post
-        WHERE
-          createdAt >= DATE_SUB( CURDATE(), INTERVAL 7 DAY )
+          DATE_FORMAT(date_range.date, '%Y-%m-%d') AS postDate,
+          COALESCE(COUNT(Post.id), 0) AS postCount
+        FROM (
+          SELECT
+            DATE_ADD(CURDATE(), INTERVAL -6 DAY) AS date
+          UNION ALL
+          SELECT
+            DATE_ADD(CURDATE(), INTERVAL -5 DAY) AS date
+          UNION ALL
+          SELECT
+            DATE_ADD(CURDATE(), INTERVAL -4 DAY) AS date
+          UNION ALL
+          SELECT
+            DATE_ADD(CURDATE(), INTERVAL -3 DAY) AS date
+          UNION ALL
+          SELECT
+            DATE_ADD(CURDATE(), INTERVAL -2 DAY) AS date
+          UNION ALL
+          SELECT
+            DATE_ADD(CURDATE(), INTERVAL -1 DAY) AS date
+          UNION ALL
+          SELECT
+            CURDATE() AS date
+        ) AS date_range
+        LEFT JOIN Post ON DATE_FORMAT(Post.createdAt, '%Y-%m-%d') = date_range.date
         GROUP BY postDate
         ORDER BY postDate;
       `;
@@ -169,7 +187,7 @@ export const postRouter = createTRPCRouter({
       return {
         postCount,
         categoryCount,
-        dailyPosts: fillOverDaysData(dailyPosts.map(v => ({ date: v.postDate, count: Number(v.postCount) })), 7),
+        dailyPosts: dailyPosts.map(v => ({ date: v.postDate, count: Number(v.postCount) })),
       }
     }),
 
