@@ -4,6 +4,7 @@ import { fontFamily } from "tailwindcss/defaultTheme"
 
 const customConfig = {
   content: ["./src/**/*.tsx"],
+  darkMode: 'class',
   theme: {
     extend: {
       fontFamily: {

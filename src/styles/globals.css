@@ -17,4 +17,28 @@
   .ant-btn-primary {
     @apply bg-[#1677ff];
   }
+
+  body {
+    @apply text-black dark:text-white transition-colors;
+  }
+
+  a {
+    @apply transition-colors;
+  }
+
+  a:hover {
+    @apply text-blue-500;
+  }
+
+  a:active {
+    @apply text-blue-600;
+  }
+
+  ul, ol {
+    @apply list-disc;
+  }
+
+  li {
+    @apply ml-4;
+  }
 }

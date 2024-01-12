@@ -1,8 +1,10 @@
 import dayjs from 'dayjs'
 
-export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+export * from './date'
+export * from './dom'
+export * from './sql'
 
-export const formatDateString = (date: Date | string | number, format = 'YYYY-MM-DD HH:mm:ss') => dayjs(date).format(format)
+export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
 export const fillOverDaysData = (data: Array<{ date: string, count: number }>, overDays: number) => {
   const nowDay = dayjs()
@@ -25,10 +27,3 @@ export const fillOverDaysData = (data: Array<{ date: string, count: number }>, o
   return res
 }
 
-export function genSQLLatestDayRange(latest: number) {
-  return new Array(latest)
-    .fill(0)
-    .map((_, i) => `SELECT DATE_ADD(CURDATE(), INTERVAL -${i} DAY) AS date`)
-    .reverse()
-    .join(' UNION ALL ')
-}
