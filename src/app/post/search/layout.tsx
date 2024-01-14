@@ -1,10 +1,10 @@
 import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Salsa } from "next/font/google";
+import { Salsa } from "next/font/google"
 
 import { api } from '~/trpc/server'
-import clsx from 'clsx';
+import clsx from 'clsx'
 
 const salsa = Salsa({
   weight: '400',
@@ -27,10 +27,18 @@ export default async function CategoryLayout({ children }: { children: React.Rea
           <div>{children}</div>
         </div>
 
-        <div className="card dark:card-bordered px-3 py-5 shadow-xl dark:shadow-none dark:border-blue-500">
-          <div className="avatar justify-center">
-            <div className="w-24 rounded-full">
-              <Image width="100" height="100" src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt="avatar" />
+        <div className={clsx(
+          'hidden box-border',
+          'card',
+          'overflow-hidden w-0 px-3 py-5 shadow-xl',
+          'dark:shadow-[#222939]',
+          'sm:block sm:w-40 md:w-60 lg:w-80',
+        )}>
+          <div className="flex justify-center">
+            <div className="avatar">
+              <div className="w-24 rounded-full">
+                <Image width="100" height="100" src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" alt="avatar" />
+              </div>
             </div>
           </div>
 

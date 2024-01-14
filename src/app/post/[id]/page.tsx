@@ -25,7 +25,7 @@ export default async function PostItemPage({ params }: { params: { id: string }}
 
       <div className="flex items-center justify-center gap-3 text-sm">
         {categories.map(({ id, name }) => (
-          <LinkTag key={id} href={`/search/category/${id}`}>#{name}</LinkTag>
+          <LinkTag key={id} href={`/post/search/category/${id}`}>#{name}</LinkTag>
         ))}
       </div>
 

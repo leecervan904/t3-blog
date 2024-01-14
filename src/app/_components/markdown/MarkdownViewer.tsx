@@ -5,7 +5,9 @@ import remarkMath from 'remark-math'
 import 'katex/dist/katex.min.css'
 
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
-import { dark } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import { dracula } from 'react-syntax-highlighter/dist/esm/styles/prism'
+
+import CopyIcon from '../CopyIcon'
 
 export interface IMarkdownViewer {
   content: string
@@ -18,20 +20,30 @@ export default function MarkdownViewer({ content }: IMarkdownViewer) {
         remarkPlugins={[remarkGfm, remarkMath]}
         components={{
           code(props) {
-            const {children, className, ...rest} = props
+            const { ref, children, className, ...rest } = props
             const match = /language-(\w+)/.exec(className ?? '')
-            return match ? (
+            const rawCodeString = String(children).replace(/\n$/, '')
+
+            const CodeBlock = match ? (
               <SyntaxHighlighter
                 {...rest}
                 PreTag="div"
-                children={String(children).replace(/\n$/, '')}
+                children={rawCodeString}
                 language={match[1]}
-                style={dark}
+                style={ dracula }
+                showLineNumbers
               />
             ) : (
               <code {...rest} className={className}>
                 {children}
               </code>
+            )
+
+            return (
+              <div className="relative">
+                <CopyIcon text={rawCodeString} />
+                {CodeBlock}
+              </div>
             )
           }
         }}
