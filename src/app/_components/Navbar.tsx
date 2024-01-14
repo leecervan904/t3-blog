@@ -19,7 +19,7 @@ const navList = [
 function Navbar() {
   const { isSm } = useBreakpoint()
 
-  if (isSm) {
+  // if (isSm) {
     return (
       <div className={clsx(
         'flex items-center justify-between py-3 px-10 bg-white shadow border-b',
@@ -29,22 +29,19 @@ function Navbar() {
           <h2 className="text-2xl">
             <Link href="/">T3</Link>
           </h2>
-  
+
           <div>
-            <Input
-              prefix={<SearchOutlined />}
-              suffix="⌘K"
-            />
+            <Input prefix={<SearchOutlined />} suffix="⌘K" />
           </div>
         </div>
-  
+
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-3">
             {navList.map(({ label, href }) => (
               <Link key={href} href={href}>{label}</Link>
             ))}
           </div>
-  
+
           <div className="flex items-center gap-3">
             <ThemeModeIcon />
             <Link href="https://github.com/leecervan904/t3-blog" target="_blank"><GithubOutlined /></Link>
@@ -52,9 +49,9 @@ function Navbar() {
         </div>
       </div>
     )
-  }
+  // }
 
-  return <NavbarMobile />
+  // return <NavbarMobile />
 }
 
 export default memo(Navbar)

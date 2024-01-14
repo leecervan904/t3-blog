@@ -5,6 +5,25 @@
 await import("./src/env.js");
 
 /** @type {import("next").NextConfig} */
-const config = {};
+const config = {
+  webpack(conf) {
+    conf.module.rules.push({
+      test: /\.svg$/i,
+      issuer: /\.[jt]sx?$/,
+      use: ['@svgr/webpack'],
+    })
+    return conf
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'daisyui.com',
+        port: '',
+        // pathname: '/account123/**',
+      },
+    ],
+  },
+};
 
 export default config;

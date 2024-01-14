@@ -1,14 +1,15 @@
-import { useLocalStorageState } from 'ahooks'
 import { useEffect } from 'react'
+import { useLocalStorageState } from 'ahooks'
+
 import { addClass, removeClass } from '~/util'
 
 export enum ThemeModeEnum {
-  AUTO = 'auto',
   LIGHT = 'light',
   DARK = 'dark',
 }
 
-export const STORAGE_THEME_MODE_KEY = '__theme-mode'
+export const STORAGE_PREFIX = '__blog__'
+export const STORAGE_THEME_MODE_KEY = `${STORAGE_PREFIX}theme-mode`
 
 /**
  * 设置主题色，优先级（依次提高）：
@@ -19,30 +20,24 @@ export const STORAGE_THEME_MODE_KEY = '__theme-mode'
  *   - dark：使用暗色
  */
 export function useTheme() {
+  const systemThemeMode = window?.matchMedia?.('(prefers-color-scheme: dark)').matches ? ThemeModeEnum.DARK : ThemeModeEnum.LIGHT
   const [themeMode, setThemeMode] = useLocalStorageState<ThemeModeEnum>(
     STORAGE_THEME_MODE_KEY,
     {
-      defaultValue: ThemeModeEnum.AUTO,
+      defaultValue: systemThemeMode,
     },
   )
 
-  // 如果没有值，初始化
-  if (!window.localStorage.getItem(STORAGE_THEME_MODE_KEY)) {
-    setThemeMode(ThemeModeEnum.AUTO)
-  }
-
-  const isSystemDarkMode = window?.matchMedia?.('(prefers-color-scheme: dark)').matches
+  useEffect(() => {
+    // 如果没有值，初始化
+    if (!window.localStorage.getItem(STORAGE_THEME_MODE_KEY)) {
+      setThemeMode(systemThemeMode)
+    }
+  }, [])
 
   useEffect(() => {
-    console.log('themeMode', themeMode);
-
-    let mode = themeMode
-    if (themeMode === ThemeModeEnum.AUTO) {
-      mode = isSystemDarkMode ? ThemeModeEnum.DARK : ThemeModeEnum.LIGHT
-    }
-
     const doc = document.documentElement
-    if (mode === ThemeModeEnum.LIGHT) {
+    if (themeMode === ThemeModeEnum.LIGHT) {
       removeClass(doc, 'dark')
     } else {
       addClass(doc, 'dark')
@@ -51,7 +46,7 @@ export function useTheme() {
 
   return {
     themeMode,
-    isSystemDarkMode,
+    systemThemeMode,
     setThemeMode,
   }
 }

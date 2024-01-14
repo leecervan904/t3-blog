@@ -1,8 +1,11 @@
 import { type Config } from "tailwindcss"
 // import defaultConfig from "tailwindcss/stubs/config.full"
 import { fontFamily } from "tailwindcss/defaultTheme"
+import daisyui, { type Config as DaisyUIConfig } from 'daisyui'
 
-const customConfig = {
+const customConfig: Config & {
+  daiysui?: DaisyUIConfig
+} = {
   content: ["./src/**/*.tsx"],
   darkMode: 'class',
   theme: {
@@ -12,7 +15,7 @@ const customConfig = {
       },
     },
   },
-  plugins: [],
+  plugins: [daisyui],
   corePlugins: {
     // 这个配置选项，相当于 normalize.css 初始化样式
     // 参考 https://tailwindcss.com/docs/preflight
