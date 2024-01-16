@@ -29,10 +29,10 @@ export default function RootLayout({
           <div className="overflow-hidden relative flex flex-col h-full">
             <Navbar />
 
-            <div className="overflow-auto flex-1 w-full bg-white dark:bg-[#111729]">
+            <div className="overflow-auto flex-1 w-full bg-base-100">
               {children}
             </div>
-          </div>
+          </div>9
         </TRPCReactProvider>
       </body>
     </html>

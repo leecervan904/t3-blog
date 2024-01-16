@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useLocalStorageState } from 'ahooks'
 
-import { addClass, removeClass } from '~/util'
+import { addClass, removeClass, setDataAttr } from '~/util'
 
 export enum ThemeModeEnum {
   LIGHT = 'light',
@@ -12,6 +12,9 @@ export const STORAGE_PREFIX = '__blog__'
 export const STORAGE_THEME_MODE_KEY = `${STORAGE_PREFIX}theme-mode`
 
 /**
+ * 这里仅仅是一种实现方式，可以选择使用第三方工具
+ * theme-change https://github.com/saadeghi/theme-change
+ *
  * 设置主题色，优先级（依次提高）：
  * 1. 系统设置：是否开启深色模式 isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
  * 2. 用户页面设置：手动切换的主题色 themeMode = 'auto' | 'light' | 'dark'，持久化到 localStorage
@@ -39,8 +42,10 @@ export function useTheme() {
     const doc = document.documentElement
     if (themeMode === ThemeModeEnum.LIGHT) {
       removeClass(doc, 'dark')
+      setDataAttr(doc, 'theme', 'light')
     } else {
       addClass(doc, 'dark')
+      setDataAttr(doc, 'theme', 'dark')
     }
   }, [themeMode])
 

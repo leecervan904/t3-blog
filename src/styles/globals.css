@@ -10,6 +10,10 @@
   /* button, [type='button'], [type='reset'], [type='submit'] {
     @apply bg-[#1677ff];
   } */
+
+  :root {
+    --color-primary: 255 0 0;
+  }
 }
 
 @layer components {
@@ -19,7 +23,8 @@
   }
 
   body {
-    @apply text-black dark:text-white transition-colors;
+    /* @apply text-black dark:text-white transition-colors; */
+    @apply text-base-100 transition-colors;
   }
 
   a {

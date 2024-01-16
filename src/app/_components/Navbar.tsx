@@ -8,7 +8,7 @@ import { SearchOutlined, GithubOutlined } from '@ant-design/icons'
 
 import { useBreakpoint } from "~/hooks/useBreakPoint";
 import ThemeModeIcon from "~/app/_components/ThemeModeIcon";
-import NavbarMobile from "./NavbarMobile";
+import { usePathname } from "next/navigation";
 
 const navList = [
   { label: '首页', href: '/' },
@@ -18,6 +18,11 @@ const navList = [
 
 function Navbar() {
   const { isSm } = useBreakpoint()
+  const pathname = usePathname()
+
+  if (pathname.startsWith('/admin')) {
+    return null
+  }
 
   // if (isSm) {
     return (

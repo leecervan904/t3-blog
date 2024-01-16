@@ -1,8 +1,22 @@
 import { z } from 'zod'
 import { type Prisma } from '@prisma/client'
+import { remark } from 'remark'
+import headings, { type HeadingItem } from '@sveltinio/remark-headings'
 
 import { createTRPCRouter, publicProcedure } from '~/server/api/trpc'
 import { BasePageInfo, BaseFilterInfo, BaseOrderInfo, BaseQueryDto } from '~/server/api/inputs'
+
+const generateToc = (rawMarkdown: string) => {
+  return new Promise(resolve => {
+    remark()
+      .use(headings)
+      .process(rawMarkdown)
+      .then(res => {
+        resolve(res)
+      })
+      .catch(console.log)
+  })
+}
 
 // mapped to prisma's schema
 export const CreatePostDto = z.object({
@@ -88,7 +102,7 @@ export const postRouter = createTRPCRouter({
         }
       }
 
-      return ctx.db.post.findMany({
+      const posts = await ctx.db.post.findMany({
         where: {
           id: { in: ids }
         },
@@ -98,6 +112,20 @@ export const postRouter = createTRPCRouter({
           tags: true,
         }
       })
+
+      const postsWithToc = await Promise.all(
+        posts.map(async post => {
+          const res = await generateToc(post.content)
+
+          return {
+            ...post,
+            content: res.value as string,
+            toc: res.data.fm.headings as HeadingItem[],
+          }
+        })
+      )
+
+      return postsWithToc
 
       // return {
       //   status: 'FAIL',

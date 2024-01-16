@@ -14,9 +14,11 @@ export default async function CategoryPage({ params }: { params: { category?: st
       {posts.map(({ id, title, abstract, content, categories, updatedAt }, i) => (
         <div key={id} className={clsx(
           'group',
-          'overflow-hidden flex lg:h-36 xl:h-48',
-          'bg-[#eee] hover:shadow-lg shadow-slate-500 rounded-lg',
-          'dark:bg-[#20293a] dark:shadow-slate-100',
+          'flex lg:h-36 xl:h-48',
+          'rounded-lg',
+          'shadow-primary hover:shadow-lg',
+          'bg-base-200',
+          'text-base-content',
         )}>
           <div className="hidden overflow-hidden box-border flex-grow-0 w-0 lg:block lg:w-36 xl:w-48">
             <div className="overflow-hidden w-full h-0 pb-[100%] scale-100 group-hover:scale-[1.35] transition-transform">
@@ -33,7 +35,7 @@ export default async function CategoryPage({ params }: { params: { category?: st
           <div className={clsx(
             'overflow-y-auto flex-1 flex flex-col gap-1 px-3 py-5  transition-all',
           )}>
-            <h3 className="text-xl text-blue-600">
+            <h3 className="text-xl text-primary">
               <Link href={`/post/${id}`}>{title}</Link>
             </h3>
 
@@ -41,7 +43,7 @@ export default async function CategoryPage({ params }: { params: { category?: st
 
             {abstract && <div className="text-sm">摘要: {abstract}</div>}
 
-            <div className="flex justify-between text-slate-500 text-xs">
+            <div className="flex justify-between text-neutral text-xs">
               <span>
                 <span>最近更新: </span>
                 <span>{formatDateString(updatedAt)}</span>

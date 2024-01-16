@@ -16,7 +16,7 @@ export default async function Page() {
               transition-all
               hover:shadow-2xl hover:bg-slate-300
             ">
-              <h2 className="font-bold text-2xl text-blue-500 hover:text-blue-800">{post.title}</h2>
+              <h2 className="font-bold text-2xl text-base-100">{post.title}</h2>
               <p>{post.content.slice(0, 30) + '...'}</p>
               <div className="flex justify-between text-slate-500 text-sm">
                 <span>
