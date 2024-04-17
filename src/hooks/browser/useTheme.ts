@@ -23,7 +23,7 @@ export const STORAGE_THEME_MODE_KEY = `${STORAGE_PREFIX}theme-mode`
  *   - dark：使用暗色
  */
 export function useTheme() {
-  const systemThemeMode = window?.matchMedia?.('(prefers-color-scheme: dark)').matches ? ThemeModeEnum.DARK : ThemeModeEnum.LIGHT
+  const systemThemeMode = window.matchMedia('(prefers-color-scheme: dark)').matches ? ThemeModeEnum.DARK : ThemeModeEnum.LIGHT
   const [themeMode, setThemeMode] = useLocalStorageState<ThemeModeEnum>(
     STORAGE_THEME_MODE_KEY,
     {

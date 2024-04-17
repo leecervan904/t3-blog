@@ -3,7 +3,7 @@ import colors from 'tailwindcss/colors'
 // import defaultConfig from "tailwindcss/stubs/config.full"
 import { fontFamily } from "tailwindcss/defaultTheme"
 import daisyui, { type Config as DaisyUIConfig } from 'daisyui'
-import themes from 'daisyui/src/theming/themes'
+// import themes from 'daisyui/src/theming/themes'
 
 const customConfig: Config & {
   daiysui?: DaisyUIConfig
@@ -11,12 +11,6 @@ const customConfig: Config & {
   content: ["./src/**/*.tsx"],
   darkMode: ['class'],
   theme: {
-    colors: {
-      ...colors,
-      // 'my-primary': colors.red['500'],
-      'my-primary': 'rgb(var(--color-primary) / <alpha-value>)',
-      "primary-muted": "oklch(var(--primary-muted) / <alpha-value>)",
-    },
     screens: {
       // ...defaultConfig.theme.screens,
       xs: '520px',
@@ -27,6 +21,11 @@ const customConfig: Config & {
       '2xl': '1536px',
     },
     extend: {
+      colors: {
+        // 'my-primary': colors.red['500'],
+        'my-primary': 'rgb(var(--color-primary) / <alpha-value>)',
+        "primary-muted": "oklch(var(--primary-muted) / <alpha-value>)",
+      },
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],
       },

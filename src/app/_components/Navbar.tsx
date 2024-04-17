@@ -4,11 +4,14 @@ import { memo } from "react";
 import clsx from "clsx";
 import { Input } from "antd";
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
 import { SearchOutlined, GithubOutlined } from '@ant-design/icons'
 
 import { useBreakpoint } from "~/hooks/useBreakPoint";
-import ThemeModeIcon from "~/app/_components/ThemeModeIcon";
+// import ThemeModeIcon from "~/app/_components/ThemeModeIcon";
 import { usePathname } from "next/navigation";
+
+const ThemeModeIcon = dynamic(() => import('~/app/_components/ThemeModeIcon'), { ssr: false })
 
 const navList = [
   { label: '首页', href: '/' },
